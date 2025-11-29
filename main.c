@@ -22,7 +22,8 @@ void mostrarLista(ArrayList *list) {
     }
 
     for (int i = 0; i < list->size; i++) {
-        printf("(%d) -> %d\n", i, list->data[i]);
+        int *valor = (int*) list->data[i];
+        printf("(%d) -> %d\n", i, *valor);
     }
 }
 
@@ -33,7 +34,8 @@ int main() {
     printf("Ingrese la capacidad inicial del ArrayList: ");
     scanf("%d", &capacidadInicial);
 
-    ArrayList *list = createArrayList(capacidadInicial);
+    // USAR NOMBRE REAL DEL HEADER
+    ArrayList *list = arraylist_create(capacidadInicial, sizeof(int));
 
     do {
         mostrarMenu();
@@ -44,23 +46,36 @@ int main() {
         case 1:
             printf("Ingrese el valor a agregar: ");
             scanf("%d", &valor);
-            addElement(list, valor);
+
+            // Guardar int dinámicamente
+            int *nuevo = malloc(sizeof(int));
+            *nuevo = valor;
+
+            arraylist_add(list, nuevo);
             printf("Elemento agregado correctamente.\n");
             break;
 
         case 2:
             printf("Ingrese el indice del elemento a eliminar: ");
             scanf("%d", &index);
-            removeElement(list, index);
+
+            if (arraylist_remove(list, index) == 0)
+                printf("Elemento eliminado.\n");
+            else
+                printf("Índice inválido.\n");
+
             break;
 
         case 3:
             printf("Ingrese el indice a consultar: ");
             scanf("%d", &index);
-            valor = getElement(list, index);
-            if (valor != -1) {
-                printf("Elemento en indice %d: %d\n", index, valor);
-            }
+
+            int *ptr = (int*) arraylist_get(list, index);
+            if (ptr != NULL)
+                printf("Elemento en indice %d: %d\n", index, *ptr);
+            else
+                printf("Índice inválido.\n");
+
             break;
 
         case 4:
@@ -77,7 +92,7 @@ int main() {
 
     } while (opcion != 5);
 
-    freeArrayList(list);
+    arraylist_destroy(list);
 
     return 0;
 }
