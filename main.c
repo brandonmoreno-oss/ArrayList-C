@@ -34,7 +34,7 @@ int main() {
     printf("Ingrese la capacidad inicial del ArrayList: ");
     scanf("%d", &capacidadInicial);
 
-    // USAR NOMBRE REAL DEL HEADER
+    // Crear ArrayList de enteros
     ArrayList *list = arraylist_create(capacidadInicial, sizeof(int));
 
     do {
@@ -47,11 +47,8 @@ int main() {
             printf("Ingrese el valor a agregar: ");
             scanf("%d", &valor);
 
-            // Guardar int dinámicamente
-            int *nuevo = malloc(sizeof(int));
-            *nuevo = valor;
-
-            arraylist_add(list, nuevo);
+            // Pasar la dirección de valor directamente
+            arraylist_add(list, &valor);
             printf("Elemento agregado correctamente.\n");
             break;
 
@@ -59,7 +56,7 @@ int main() {
             printf("Ingrese el indice del elemento a eliminar: ");
             scanf("%d", &index);
 
-            if (arraylist_remove(list, index) == 0)
+            if (arraylist_remove(list, index))
                 printf("Elemento eliminado.\n");
             else
                 printf("Índice inválido.\n");
@@ -92,7 +89,10 @@ int main() {
 
     } while (opcion != 5);
 
+    // Liberar memoria
     arraylist_destroy(list);
 
     return 0;
 }
+
+  
